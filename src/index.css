@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.range-input {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+.range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fbfaf4;
+  border: 3px solid #16233b;
+  cursor: pointer;
+}
+.range-input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fbfaf4;
+  border: 3px solid #16233b;
+  cursor: pointer;
+}
+.range-input::-moz-range-track {
+  background: transparent;
+  height: 6px;
+}
+.range-input:focus-visible {
+  outline: 2px solid #9c7a2a;
+  outline-offset: 3px;
+}
+
+.seal {
+  width: 152px;
+  height: 152px;
+  border-radius: 50%;
+  border: 2px dashed var(--sealcolor, #9b2f22);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-7deg);
+  flex-shrink: 0;
+}
+.seal::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border: 1px solid var(--sealcolor, #9b2f22);
+  border-radius: 50%;
+  opacity: 0.55;
+}
+
+details > summary {
+  cursor: pointer;
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

@@ -1,0 +1,40 @@
+// v25 = Ist 2025 (vorläufiger Haushaltsabschluss) · v26 = Soll 2026 (Haushaltsgesetz 2026)
+// Alle Werte in Mrd. Euro. Quelle je Zeile: sourceKey, siehe sources.js.
+
+export const REVENUE_ITEMS = [
+  { id: "lohnsteuer", section: "steuern", label: "Lohnsteuer", tag: "Gemeinschaftsteuer", v25: 111.628, v26: 117.236, note: "42,5 % Bundesanteil", sourceKey: "bmfSollbericht2026" },
+  { id: "veranlagteEst", section: "steuern", label: "Veranlagte Einkommensteuer", tag: "Gemeinschaftsteuer", v25: 33.305, v26: 34.829, note: "42,5 % Bundesanteil", sourceKey: "bmfSollbericht2026" },
+  { id: "nvSteuer", section: "steuern", label: "Nicht veranlagte Steuer vom Ertrag", tag: "Gemeinschaftsteuer", v25: 15.559, v26: 15.725, note: "50 % Bundesanteil", sourceKey: "bmfSollbericht2026" },
+  { id: "kst", section: "steuern", label: "Körperschaftsteuer", tag: "Gemeinschaftsteuer", v25: 19.582, v26: 20.375, note: "50 % Bundesanteil", sourceKey: "bmfSollbericht2026" },
+  { id: "mindeststeuer", section: "steuern", label: "Mindeststeuer", tag: "Gemeinschaftsteuer", v25: 0, v26: 0.500, note: "Neu ab 2026: globale Mindestbesteuerung großer Konzerne", sourceKey: "bmfSollbericht2026" },
+  { id: "abgeltungsteuer", section: "steuern", label: "Abgeltungsteuer auf Kapitalerträge", tag: "Gemeinschaftsteuer", v25: 10.912, v26: 9.262, note: "44 % Bundesanteil", sourceKey: "bmfSollbericht2026" },
+  { id: "umsatzsteuer", section: "steuern", label: "Steuern vom Umsatz", tag: "Gemeinschaftsteuer", v25: 149.846, v26: 155.516, note: "Umsatzsteuer plus Einfuhrumsatzsteuer, rund 52,8 % Bundesanteil", sourceKey: "bmfSollbericht2026" },
+  { id: "gewst", section: "steuern", label: "Gewerbesteuerumlage", tag: "Gemeinschaftsteuer", v25: 2.582, v26: 2.822, sourceKey: "bmfSollbericht2026" },
+  { id: "energiesteuer", section: "steuern", label: "Energiesteuer", tag: "Bundessteuer", v25: 37.563, v26: 36.500, note: "Auf Benzin, Diesel, Heizöl, Erdgas u. a.", sourceKey: "bmfSollbericht2026" },
+  { id: "tabaksteuer", section: "steuern", label: "Tabaksteuer", tag: "Bundessteuer", v25: 17.632, v26: 17.110, sourceKey: "bmfSollbericht2026" },
+  { id: "alkoholsteuer", section: "steuern", label: "Alkoholsteuer", tag: "Bundessteuer", v25: 2.050, v26: 1.921, sourceKey: "bmfSollbericht2026" },
+  { id: "schaumwein", section: "steuern", label: "Schaumweinsteuer", tag: "Bundessteuer", v25: 0.388, v26: 0.357, sourceKey: "bmfSollbericht2026" },
+  { id: "kaffeesteuer", section: "steuern", label: "Kaffeesteuer", tag: "Bundessteuer", v25: 1.038, v26: 1.020, sourceKey: "bmfSollbericht2026" },
+  { id: "versicherungsteuer", section: "steuern", label: "Versicherungsteuer", tag: "Bundessteuer", v25: 19.611, v26: 20.180, sourceKey: "bmfSollbericht2026" },
+  { id: "stromsteuer", section: "steuern", label: "Stromsteuer", tag: "Bundessteuer", v25: 5.856, v26: 6.850, sourceKey: "bmfSollbericht2026" },
+  { id: "kfzsteuer", section: "steuern", label: "Kraftfahrzeugsteuer", tag: "Bundessteuer", v25: 9.598, v26: 9.620, sourceKey: "bmfSollbericht2026" },
+  { id: "luftverkehr", section: "steuern", label: "Luftverkehrsteuer", tag: "Bundessteuer", v25: 2.063, v26: 2.080, sourceKey: "bmfSollbericht2026" },
+  { id: "soli", section: "steuern", label: "Solidaritätszuschlag", tag: "Bundessteuer", v25: 12.878, v26: 13.100, sourceKey: "bmfSollbericht2026" },
+  { id: "sonstBundessteuern", section: "steuern", label: "Sonstiges (u. a. EU-Energiekrisenbeitrag, ausgelaufen)", tag: "Bundessteuer", v25: 0.136, v26: 0.002, sourceKey: "bmfSollbericht2026" },
+
+  { id: "steuermassnahmen", section: "abzuege", label: "Geplante steuerliche Entlastungen 2026", tag: "Tgr. 01", v25: 0, v26: 4.761, note: "Rechtsänderungen nach der Steuerschätzung, u. a. Aktivrente", sourceKey: "bmfSollbericht2026" },
+  { id: "konsolidierungshilfen", section: "abzuege", label: "Konsolidierungshilfen an Bremen/Saarland", tag: "Art. 143d GG", v25: 0.800, v26: 0.800, sourceKey: "bmfSollbericht2026" },
+  { id: "bez", section: "abzuege", label: "Ergänzungszuweisungen an die Länder", tag: "Finanzausgleich", v25: 11.781, v26: 11.392, sourceKey: "bmfSollbericht2026" },
+  { id: "mwstEU", section: "abzuege", label: "Mehrwertsteuer-Eigenmittel der EU", tag: "EU-Eigenmittel", v25: 5.582, v26: 5.770, sourceKey: "bmfSollbericht2026" },
+  { id: "bneEU", section: "abzuege", label: "BNE-Eigenmittel der EU", tag: "EU-Eigenmittel", v25: 22.200, v26: 32.919, note: "Größter EU-Beitrag, steigt 2026 deutlich", sourceKey: "bmfSollbericht2026" },
+  { id: "kunststoffEU", section: "abzuege", label: "Kunststoff-Eigenmittel der EU", tag: "EU-Eigenmittel", v25: 1.249, v26: 1.249, sourceKey: "bmfSollbericht2026" },
+  { id: "oepnv", section: "abzuege", label: "Regionalisierungsmittel für den ÖPNV", tag: "an die Länder", v25: 13.061, v26: 11.908, sourceKey: "bmfSollbericht2026" },
+  { id: "kfzAusgleich", section: "abzuege", label: "Ausgleich Kfz-Steuer/Lkw-Maut", tag: "an die Länder", v25: 8.992, v26: 8.992, sourceKey: "bmfSollbericht2026" },
+
+  { id: "verwaltungseinnahmen", section: "sonstige", label: "Verwaltungseinnahmen", tag: "Gebühren u. a.", v25: 24.370, v26: 18.194, sourceKey: "bmfSollbericht2026" },
+  { id: "wirtschTaetigkeit", section: "sonstige", label: "Einnahmen aus wirtschaftlicher Tätigkeit", tag: "u. a. Beteiligungen", v25: 3.481, v26: 3.733, sourceKey: "bmfSollbericht2026" },
+  { id: "darlehen", section: "sonstige", label: "Darlehensrückflüsse, Gewährleistungen", tag: "Kapitalrechnung", v25: 1.176, v26: 0.987, sourceKey: "bmfSollbericht2026" },
+  { id: "zinseinnahmen", section: "sonstige", label: "Zinseinnahmen", tag: "Kapitalrechnung", v25: 1.845, v26: 0.949, sourceKey: "bmfSollbericht2026" },
+  { id: "zuweisungenDritter", section: "sonstige", label: "Zuweisungen & Zuschüsse Dritter", tag: "u. a. EU-Aufbaufonds", v25: 6.433, v26: 14.634, sourceKey: "bmfSollbericht2026" },
+  { id: "sonstEinnahmenRest", section: "sonstige", label: "Sonstige, nicht einzeln ausgewiesene Einnahmen", tag: "Rest", v25: 2.054, v26: 0.720, note: "Differenz zur amtlichen Gruppensumme", sourceKey: "bmfSollbericht2026" },
+];

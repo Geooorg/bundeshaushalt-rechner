@@ -1,0 +1,185 @@
+import { useMemo, useState } from "react";
+import { REVENUE_ITEMS } from "./data/revenue.js";
+import { EXPENSE_ITEMS } from "./data/expenses.js";
+import { fmt } from "./utils.js";
+import BudgetGroup from "./components/BudgetGroup.jsx";
+import InfoPanel from "./components/InfoPanel.jsx";
+
+const OFFICIAL_SALDO = { "2025": -65.355, "2026": -98.110 };
+
+export default function App() {
+  const datasets = useMemo(() => {
+    const all = [...REVENUE_ITEMS, ...EXPENSE_ITEMS];
+    const y25 = {}, y26 = {};
+    all.forEach((i) => {
+      y25[i.id] = i.v25;
+      y26[i.id] = i.v26;
+    });
+    return { "2025": y25, "2026": y26 };
+  }, []);
+
+  const [baseYear, setBaseYear] = useState("2026");
+  const [values, setValues] = useState(datasets["2026"]);
+
+  const update = (id, v) => setValues((prev) => ({ ...prev, [id]: v }));
+  const loadYear = (y) => {
+    setBaseYear(y);
+    setValues(datasets[y]);
+  };
+  const reset = () => setValues(datasets[baseYear]);
+
+  const sums = useMemo(() => {
+    const bySection = (list, section) =>
+      list.filter((i) => i.section === section).reduce((s, i) => s + values[i.id], 0);
+    const steuernBrutto = bySection(REVENUE_ITEMS, "steuern");
+    const abzuege = bySection(REVENUE_ITEMS, "abzuege");
+    const sonstige = bySection(REVENUE_ITEMS, "sonstige");
+    const steuernNetto = steuernBrutto - abzuege;
+    const einnahmen = steuernNetto + sonstige;
+    const ausgaben = EXPENSE_ITEMS.reduce((s, i) => s + values[i.id], 0);
+    const saldo = einnahmen - ausgaben;
+    return { steuernBrutto, abzuege, sonstige, steuernNetto, einnahmen, ausgaben, saldo };
+  }, [values]);
+
+  const perSecond = (sums.ausgaben * 1e9) / (365 * 24 * 3600);
+  const sealColor = sums.saldo < 0 ? "#9B2F22" : "#2E5E45";
+
+  return (
+    <div className="min-h-screen bg-paper text-ink">
+      <div className="max-w-5xl mx-auto px-4 md:px-8 pb-24 pt-8 md:pt-12">
+        <header className="mb-6">
+          <p className="font-mono text-xs tracking-widest uppercase text-muted">
+            Bundeshaushalt · Ist 2025 im Vergleich zum Plan 2026
+          </p>
+          <h1 className="font-display text-3xl md:text-4xl font-semibold mt-1">
+            Der Bundeshaushalt zum Selberrechnen
+          </h1>
+          <p className="font-body text-sm md:text-base mt-3 max-w-2xl text-muted">
+            Ausgangswerte: BMF-Monatsbericht Februar 2026 ("Sollbericht 2026"). Wählen Sie ein
+            Basisjahr und verschieben Sie die Regler, um eigene Szenarien durchzuspielen.
+          </p>
+          <div className="flex gap-2 mt-4">
+            {["2025", "2026"].map((y) => (
+              <button
+                key={y}
+                onClick={() => loadYear(y)}
+                className={
+                  "font-display text-xs uppercase tracking-wide px-4 py-2 rounded-full border border-ink " +
+                  (baseYear === y ? "bg-ink text-card" : "bg-transparent text-ink")
+                }
+              >
+                {y === "2025" ? "2025 (Ist)" : "2026 (Plan)"}
+              </button>
+            ))}
+          </div>
+        </header>
+
+        <div className="rounded-2xl p-5 md:p-6 flex flex-col md:flex-row items-center gap-6 mb-8 bg-card border border-line">
+          <div className="seal" style={{ "--sealcolor": sealColor }}>
+            <div className="text-center px-2">
+              <div className="font-display text-xs uppercase tracking-wide" style={{ color: sealColor }}>
+                {sums.saldo < 0 ? "Neue Schulden" : "Überschuss"}
+              </div>
+              <div className="font-mono text-2xl font-bold" style={{ color: sealColor }}>
+                {fmt(Math.abs(sums.saldo))}
+              </div>
+              <div className="font-mono text-xs" style={{ color: sealColor }}>
+                Mrd. € · Basis {baseYear}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-x-8 gap-y-3 flex-1 w-full">
+            <div>
+              <div className="font-mono text-xs uppercase tracking-wide text-muted">Einnahmen</div>
+              <div className="font-mono text-xl font-semibold text-ledgerGreen">
+                {fmt(sums.einnahmen)} <span className="text-sm font-normal">Mrd. €</span>
+              </div>
+            </div>
+            <div>
+              <div className="font-mono text-xs uppercase tracking-wide text-muted">Ausgaben</div>
+              <div className="font-mono text-xl font-semibold text-slateBlue">
+                {fmt(sums.ausgaben)} <span className="text-sm font-normal">Mrd. €</span>
+              </div>
+            </div>
+            <div className="col-span-2">
+              <p className="font-body text-xs text-muted">
+                Das entspricht rund {fmt(perSecond, 0)} € Ausgaben — jede Sekunde. Amtlicher Saldo:
+                2025 Ist {fmt(OFFICIAL_SALDO["2025"])} Mrd. € · 2026 Soll {fmt(OFFICIAL_SALDO["2026"])} Mrd. €.
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={reset}
+            className="font-display text-xs uppercase tracking-wide px-4 py-2 rounded-full shrink-0 border border-ink text-ink bg-transparent"
+          >
+            Zurücksetzen
+          </button>
+        </div>
+
+        <InfoPanel title="Wie transparent sind Rente & Sozialversicherung im Bundeshaushalt?">
+          <p>
+            Nur bedingt. Der Bundeshaushalt zeigt bei „Rentenversicherung" nur, was der{" "}
+            <strong className="text-ink">Bund an Zuschüssen zahlt</strong> — 123,8 Mrd. € 2026
+            (2025: 118,8 Mrd. €). Nicht sichtbar sind die Pflichtbeiträge von rund 21 Mio.
+            Beschäftigten und ihren Arbeitgebern (Beitragssatz 18,6 %), die direkt an die
+            Deutsche Rentenversicherung fließen. 2023 lagen die gesamten Rentenausgaben bei
+            340,4 Mrd. € — deutlich mehr als im Bundeshaushalt sichtbar.
+          </p>
+          <p className="text-ink">Weiterführende Quellen:</p>
+          <ul className="space-y-1.5 list-none m-0 p-0">
+            <li>— <strong className="text-ink">Rentenversicherungsbericht</strong> (jährlich, § 154 SGB VI)</li>
+            <li>— <strong className="text-ink">Deutsche Rentenversicherung Bund</strong> ("Aktuelle Daten", statistik-rente.de)</li>
+            <li>— <strong className="text-ink">Sozialbudget</strong> (BMAS)</li>
+            <li>— <strong className="text-ink">GKV-Schätzerkreis</strong> für die Krankenversicherung</li>
+            <li>— <strong className="text-ink">Haushalt der Bundesagentur für Arbeit</strong></li>
+            <li>— <strong className="text-ink">Bundesrechnungshof</strong>-Prüfberichte zur Rentenversicherung</li>
+          </ul>
+        </InfoPanel>
+
+        <InfoPanel title="Wer zahlt eigentlich was? Bund, Länder, Kommunen">
+          <p>
+            Viele Aufgaben, die man intuitiv „dem Staat" zuordnet, finanzieren in Deutschland
+            gar nicht der Bund, sondern die 16 Bundesländer oder die Kommunen:
+          </p>
+          <ul className="space-y-2 list-none m-0 p-0">
+            <li>— <strong className="text-ink">Polizei:</strong> Landespolizei ist Ländersache.</li>
+            <li>— <strong className="text-ink">Feuerwehr:</strong> fast vollständig kommunal finanziert.</li>
+            <li>— <strong className="text-ink">Finanzämter:</strong> sind Landesbehörden.</li>
+            <li>— <strong className="text-ink">Schulen:</strong> Bildung ist Ländersache.</li>
+            <li>— <strong className="text-ink">Krankenhäuser:</strong> Länder (Investitionen) und Krankenkassen (Betrieb).</li>
+          </ul>
+        </InfoPanel>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-4">
+          <section>
+            <h2 className="font-display text-lg font-semibold mb-1">Einnahmen</h2>
+            <p className="font-body text-xs mb-4 text-muted">Basis: {baseYear}.</p>
+            <BudgetGroup items={REVENUE_ITEMS} section="steuern" values={values} onChange={update} color="#2E5E45" total={sums.einnahmen} title="Steuern (Bundesanteil)" />
+            <BudgetGroup items={REVENUE_ITEMS} section="abzuege" values={values} onChange={update} color="#9C7A2A" total={sums.einnahmen} title="Abzüge vor dem Bundeshaushalt" description="Wird von den Steuereinnahmen abgezogen." negative />
+            <BudgetGroup items={REVENUE_ITEMS} section="sonstige" values={values} onChange={update} color="#2E5E45" total={sums.einnahmen} title="Sonstige Einnahmen" />
+          </section>
+
+          <section>
+            <h2 className="font-display text-lg font-semibold mb-1">Ausgaben</h2>
+            <p className="font-body text-xs mb-4 text-muted">Nach Aufgabenbereich (Funktionenplan). Basis: {baseYear}.</p>
+            <BudgetGroup items={EXPENSE_ITEMS} section="dienste" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Allgemeine Dienste & Sicherheit" />
+            <BudgetGroup items={EXPENSE_ITEMS} section="bildung" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Bildung, Wissenschaft, Forschung" />
+            <BudgetGroup items={EXPENSE_ITEMS} section="soziales" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Soziale Sicherung, Familie, Arbeitsmarkt" description="Größter Ausgabenblock — Rente, Gesundheit, Bürgergeld u. a." />
+            <BudgetGroup items={EXPENSE_ITEMS} section="wirtschaft" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Wirtschaft, Umwelt, Wohnen, Landwirtschaft" />
+            <BudgetGroup items={EXPENSE_ITEMS} section="verkehr" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Verkehr" />
+            <BudgetGroup items={EXPENSE_ITEMS} section="finanz" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Finanzwirtschaft & Zinsen" />
+          </section>
+        </div>
+
+        <footer className="mt-12 pt-6 border-t border-line">
+          <p className="font-body text-xs text-muted">
+            Quellen: siehe <code>src/data/sources.js</code>. Dieses Werkzeug dient der
+            Veranschaulichung, nicht der Haushaltsplanung.
+          </p>
+        </footer>
+      </div>
+    </div>
+  );
+}
