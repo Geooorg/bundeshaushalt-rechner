@@ -15,6 +15,8 @@ npm run validate-data   # prüft, ob alle Datenzeilen zu den amtlichen Summen pa
 Es gibt keinen Test-Runner; `npm run validate-data` (`scripts/validate-data.mjs`) ist die
 einzige automatisierte Prüfung. Nach jeder Änderung an `src/data/revenue.js`,
 `src/data/expenses.js` oder `src/data/meta.js` muss dieses Skript erneut laufen.
+`.github/workflows/ci.yml` führt bei jedem Push/PR auf `main` `validate-data` und
+`build` automatisch aus.
 
 ## Architektur
 
@@ -30,6 +32,11 @@ Daten von UI:
   `sourceKey`, damit Herkunftsnachweise nicht als Fließtext verstreut sind.
 - `src/data/meta.js` — amtliche Kontrollsummen (`OFFICIAL_TOTALS`) und Toleranz, gegen
   die `scripts/validate-data.mjs` die Summe aller Datenzeilen prüft.
+- `src/data/funktionen.js` — Kurzbeschreibungen der amtlichen Funktionenplan-Kategorien
+  (Anlage zu § 13 BHO), als Hover-Hinweis für die „Funktion NN"-Badges in `Row.jsx`.
+- `src/data/explanations.js` — ausführlichere Erläuterungen zu Datenzeilen, die im
+  Rechner nur einen kurzen Hinweis (z. B. „Rest") bekommen; Zeilen verweisen per
+  `explainKey` dorthin, dargestellt von `Explanations.jsx`.
 - `src/App.jsx` — hält den gesamten State (aktuelle Regler-Werte pro Zeile, Basisjahr)
   in einer flachen `{id: value}`-Map; wechselt man das Basisjahr, wird diese Map aus
   `datasets["2025"|"2026"]` neu befüllt. Summen (Steuern brutto/netto, Einnahmen,
@@ -42,6 +49,11 @@ Daten von UI:
   nicht exakt zur amtlichen Gruppensumme aufaddieren, gibt es eine „Sonstige/Rest"-Zeile.
 - Styling über Tailwind (echter Compiler, `tailwind.config.js`), keine
   CSS-Variablen-Konstruktion mehr wie im ursprünglichen Artefakt.
+- `src/components/` — `SearchField.jsx` (Live-Suche über Einnahme-/Ausgabezeilen),
+  `DonutChart.jsx` (Kuchendiagramm für Einnahmen/Ausgaben in `App.jsx`),
+  `Explanations.jsx` (rendert `src/data/explanations.js`) und `Sources.jsx` (rendert
+  `src/data/sources.js`) ergänzen die bestehenden `BudgetGroup.jsx`, `Row.jsx`,
+  `SectionHeader.jsx`, `InfoPanel.jsx`.
 
 ## Deployment
 
