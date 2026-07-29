@@ -7,6 +7,8 @@ export const sliderMax = (item) => Math.ceil((Math.max(item.v25, item.v26) * 2.3
 
 export const rowAnchor = (id) => `zeile-${id}`;
 
+export const sectionAnchor = (section) => `sektion-${section}`;
+
 export const formatDate = (iso) => {
   const [y, m, d] = iso.split("-");
   return `${d}.${m}.${y}`;

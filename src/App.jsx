@@ -1,14 +1,30 @@
 import { useMemo, useState } from "react";
 import { REVENUE_ITEMS } from "./data/revenue.js";
 import { EXPENSE_ITEMS } from "./data/expenses.js";
-import { fmt } from "./utils.js";
+import { fmt, sectionAnchor, rowAnchor } from "./utils.js";
 import BudgetGroup from "./components/BudgetGroup.jsx";
 import InfoPanel from "./components/InfoPanel.jsx";
 import SearchField from "./components/SearchField.jsx";
+import DonutChart from "./components/DonutChart.jsx";
 import Explanations from "./components/Explanations.jsx";
 import Sources from "./components/Sources.jsx";
 
 const OFFICIAL_SALDO = { "2025": -65.355, "2026": -98.110 };
+
+const EXPENSE_SECTIONS = [
+  { key: "dienste", label: "Allgemeine Dienste & Sicherheit", color: "#35566E" },
+  { key: "bildung", label: "Bildung, Wissenschaft, Forschung", color: "#9C7A2A" },
+  { key: "soziales", label: "Soziale Sicherung, Familie, Arbeitsmarkt", color: "#2E5E45" },
+  { key: "wirtschaft", label: "Wirtschaft, Umwelt, Wohnen, Landwirtschaft", color: "#6B4226" },
+  { key: "verkehr", label: "Verkehr", color: "#7B3F61" },
+  { key: "finanz", label: "Finanzwirtschaft & Zinsen", color: "#4A6C6F" },
+];
+
+// Anteil an den Einnahmen, ab dem eine Einnahmequelle im Kuchendiagramm einen eigenen
+// Slice bekommt statt in "Sonstige Einnahmen" aufzugehen.
+const REVENUE_SLICE_THRESHOLD = 0.05;
+
+const REVENUE_PALETTE = ["#2E5E45", "#3E7C5B", "#6B8E4E", "#9C7A2A", "#B79A4B", "#5B7F62", "#7A9E6E", "#C2A46B"];
 
 export default function App() {
   const datasets = useMemo(() => {
@@ -47,6 +63,37 @@ export default function App() {
   const perSecond = (sums.ausgaben * 1e9) / (365 * 24 * 3600);
   const sealColor = sums.saldo < 0 ? "#9B2F22" : "#2E5E45";
 
+  const revenueSegments = useMemo(() => {
+    const threshold = sums.einnahmen * REVENUE_SLICE_THRESHOLD;
+    const bigItems = REVENUE_ITEMS.filter((i) => i.section !== "abzuege" && values[i.id] >= threshold).sort(
+      (a, b) => values[b.id] - values[a.id]
+    );
+    const bigSum = bigItems.reduce((s, i) => s + values[i.id], 0);
+    const rest = Math.max(0, sums.einnahmen - bigSum);
+
+    const segments = bigItems.map((i, idx) => ({
+      key: i.id,
+      label: i.label,
+      value: values[i.id],
+      color: REVENUE_PALETTE[idx % REVENUE_PALETTE.length],
+      anchorId: rowAnchor(i.id),
+    }));
+    if (rest > 0) {
+      segments.push({ key: "sonstige-rest", label: "Sonstige Einnahmen", value: rest, color: "#B8AE8C" });
+    }
+    return segments;
+  }, [values, sums.einnahmen]);
+
+  const expenseSegments = useMemo(
+    () =>
+      EXPENSE_SECTIONS.map((s) => ({
+        ...s,
+        value: EXPENSE_ITEMS.filter((i) => i.section === s.key).reduce((sum, i) => sum + values[i.id], 0),
+        anchorId: sectionAnchor(s.key),
+      })),
+    [values]
+  );
+
   return (
     <div className="min-h-screen bg-paper text-ink">
       <div className="max-w-5xl mx-auto px-4 md:px-8 pb-24 pt-8 md:pt-12">
@@ -55,7 +102,7 @@ export default function App() {
             Bundeshaushalt · Ist 2025 im Vergleich zum Plan 2026
           </p>
           <h1 className="font-display text-3xl md:text-4xl font-semibold mt-1">
-            Der Bundeshaushalt zum Selberrechnen
+            Der Bundeshaushalt zum Selbst-Rechnen
           </h1>
           <p className="font-body text-sm md:text-base mt-3 max-w-2xl text-muted">
             Ausgangswerte: BMF-Monatsbericht Februar 2026 ("Sollbericht 2026"). Wählen Sie ein
@@ -121,6 +168,39 @@ export default function App() {
           </button>
         </div>
 
+        <div className="mb-8">
+          <h2 className="font-display text-lg font-semibold mb-4">Zusammensetzung (gr&ouml;&szlig;te Positionen)</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <DonutChart title="Einnahmen" segments={revenueSegments} total={sums.einnahmen} />
+            <DonutChart title="Ausgaben" segments={expenseSegments} total={sums.ausgaben} />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-4">
+          <section>
+            <h2 className="font-display text-lg font-semibold mb-1">Einnahmen</h2>
+            <p className="font-body text-xs mb-4 text-muted">Basis: {baseYear}.</p>
+            <SearchField items={REVENUE_ITEMS} placeholder="Einnahmen durchsuchen… (z.B. „UmsatzSt“)" />
+            <BudgetGroup items={REVENUE_ITEMS} section="steuern" values={values} onChange={update} color="#2E5E45" total={sums.einnahmen} title="Steuern (Bundesanteil)" />
+            <BudgetGroup items={REVENUE_ITEMS} section="abzuege" values={values} onChange={update} color="#9C7A2A" total={sums.einnahmen} title="Abzüge vor dem Bundeshaushalt" description="Wird von den Steuereinnahmen abgezogen." negative />
+            <BudgetGroup items={REVENUE_ITEMS} section="sonstige" values={values} onChange={update} color="#2E5E45" total={sums.einnahmen} title="Sonstige Einnahmen" />
+          </section>
+
+          <section>
+            <h2 className="font-display text-lg font-semibold mb-1">Ausgaben</h2>
+            <p className="font-body text-xs mb-4 text-muted">Nach Aufgabenbereich (Funktionenplan). Basis: {baseYear}.</p>
+            <SearchField items={EXPENSE_ITEMS} placeholder="Ausgaben durchsuchen… (z.B. „Verteidigung“)" />
+            <BudgetGroup items={EXPENSE_ITEMS} section="dienste" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Allgemeine Dienste & Sicherheit" />
+            <BudgetGroup items={EXPENSE_ITEMS} section="bildung" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Bildung, Wissenschaft, Forschung" />
+            <BudgetGroup items={EXPENSE_ITEMS} section="soziales" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Soziale Sicherung, Familie, Arbeitsmarkt" description="Größter Ausgabenblock — Rente, Gesundheit, Bürgergeld u. a." />
+            <BudgetGroup items={EXPENSE_ITEMS} section="wirtschaft" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Wirtschaft, Umwelt, Wohnen, Landwirtschaft" />
+            <BudgetGroup items={EXPENSE_ITEMS} section="verkehr" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Verkehr" />
+            <BudgetGroup items={EXPENSE_ITEMS} section="finanz" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Finanzwirtschaft & Zinsen" />
+          </section>
+        </div>
+
+        <Explanations />
+
         <InfoPanel title="Wie transparent sind Rente & Sozialversicherung im Bundeshaushalt?">
           <p>
             Nur bedingt. Der Bundeshaushalt zeigt bei „Rentenversicherung" nur, was der{" "}
@@ -155,31 +235,6 @@ export default function App() {
           </ul>
         </InfoPanel>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-4">
-          <section>
-            <h2 className="font-display text-lg font-semibold mb-1">Einnahmen</h2>
-            <p className="font-body text-xs mb-4 text-muted">Basis: {baseYear}.</p>
-            <SearchField items={REVENUE_ITEMS} placeholder="Einnahmen durchsuchen… (z. B. „Umsatzsteuer“)" />
-            <BudgetGroup items={REVENUE_ITEMS} section="steuern" values={values} onChange={update} color="#2E5E45" total={sums.einnahmen} title="Steuern (Bundesanteil)" />
-            <BudgetGroup items={REVENUE_ITEMS} section="abzuege" values={values} onChange={update} color="#9C7A2A" total={sums.einnahmen} title="Abzüge vor dem Bundeshaushalt" description="Wird von den Steuereinnahmen abgezogen." negative />
-            <BudgetGroup items={REVENUE_ITEMS} section="sonstige" values={values} onChange={update} color="#2E5E45" total={sums.einnahmen} title="Sonstige Einnahmen" />
-          </section>
-
-          <section>
-            <h2 className="font-display text-lg font-semibold mb-1">Ausgaben</h2>
-            <p className="font-body text-xs mb-4 text-muted">Nach Aufgabenbereich (Funktionenplan). Basis: {baseYear}.</p>
-            <SearchField items={EXPENSE_ITEMS} placeholder="Ausgaben durchsuchen… (z. B. „Verteid“)" />
-            <BudgetGroup items={EXPENSE_ITEMS} section="dienste" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Allgemeine Dienste & Sicherheit" />
-            <BudgetGroup items={EXPENSE_ITEMS} section="bildung" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Bildung, Wissenschaft, Forschung" />
-            <BudgetGroup items={EXPENSE_ITEMS} section="soziales" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Soziale Sicherung, Familie, Arbeitsmarkt" description="Größter Ausgabenblock — Rente, Gesundheit, Bürgergeld u. a." />
-            <BudgetGroup items={EXPENSE_ITEMS} section="wirtschaft" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Wirtschaft, Umwelt, Wohnen, Landwirtschaft" />
-            <BudgetGroup items={EXPENSE_ITEMS} section="verkehr" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Verkehr" />
-            <BudgetGroup items={EXPENSE_ITEMS} section="finanz" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Finanzwirtschaft & Zinsen" />
-          </section>
-        </div>
-
-        <Explanations />
-
         <Sources />
 
         <footer className="mt-8 pt-6 border-t border-line">
@@ -187,7 +242,8 @@ export default function App() {
             Erläuterungen und Quellen: siehe Abschnitte{" "}
             <a href="#erlaeuterungen" className="underline decoration-dotted hover:decoration-solid">„Erläuterungen“</a>{" "}
             und <a href="#quellen" className="underline decoration-dotted hover:decoration-solid">„Quellen“</a>.
-            Dieses Werkzeug dient der Veranschaulichung, nicht der Haushaltsplanung.
+            Dieses Werkzeug dient der Veranschaulichung.
+            &copy; 2026 Georg Stach
           </p>
         </footer>
       </div>

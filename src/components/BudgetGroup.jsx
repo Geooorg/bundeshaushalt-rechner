@@ -12,7 +12,7 @@ export default function BudgetGroup({ items, section, values, onChange, color, t
 
   return (
     <>
-      <SectionHeader title={title} total={groupTotal} color={color} description={description} sources={sources} />
+      <SectionHeader title={title} total={groupTotal} color={color} description={description} sources={sources} section={section} />
       {groupItems.map((item) => (
         <Row
           key={item.id}

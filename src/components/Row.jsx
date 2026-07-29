@@ -1,10 +1,12 @@
 import { fmt, safeShare, sliderMax, deltaLabel, rowAnchor } from "../utils.js";
 import { explanationAnchor, explanationNumber } from "../data/explanations.js";
+import { FUNKTIONEN_HINWEISE } from "../data/funktionen.js";
 
 export default function Row({ item, value, onChange, color, total, negative }) {
   const max = sliderMax(item);
   const pct = Math.min(100, (value / max) * 100);
   const share = safeShare(value, total);
+  const funktionHinweis = FUNKTIONEN_HINWEISE[item.tag];
 
   return (
     <div id={rowAnchor(item.id)} className="py-3 border-b border-line scroll-mt-4">
@@ -12,7 +14,10 @@ export default function Row({ item, value, onChange, color, total, negative }) {
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-display text-sm font-medium text-ink">{item.label}</span>
-            <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-tagbg text-muted">
+            <span
+              className={"font-mono text-xs px-1.5 py-0.5 rounded bg-tagbg text-muted" + (funktionHinweis ? " cursor-help" : "")}
+              title={funktionHinweis}
+            >
               {item.tag}
             </span>
             {item.explainKey && (
