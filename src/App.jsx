@@ -201,6 +201,7 @@ export default function App() {
 
         <Explanations />
 
+        <div className="mt-8">
         <InfoPanel title="Wie transparent sind Rente & Sozialversicherung im Bundeshaushalt?">
           <p>
             Nur bedingt. Der Bundeshaushalt zeigt bei „Rentenversicherung" nur, was der{" "}
@@ -234,6 +235,7 @@ export default function App() {
             <li>— <strong className="text-ink">Krankenhäuser:</strong> Länder (Investitionen) und Krankenkassen (Betrieb).</li>
           </ul>
         </InfoPanel>
+        </div>
 
         <Sources />
 
