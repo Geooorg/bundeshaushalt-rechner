@@ -4,6 +4,9 @@ import { EXPENSE_ITEMS } from "./data/expenses.js";
 import { fmt } from "./utils.js";
 import BudgetGroup from "./components/BudgetGroup.jsx";
 import InfoPanel from "./components/InfoPanel.jsx";
+import SearchField from "./components/SearchField.jsx";
+import Explanations from "./components/Explanations.jsx";
+import Sources from "./components/Sources.jsx";
 
 const OFFICIAL_SALDO = { "2025": -65.355, "2026": -98.110 };
 
@@ -156,6 +159,7 @@ export default function App() {
           <section>
             <h2 className="font-display text-lg font-semibold mb-1">Einnahmen</h2>
             <p className="font-body text-xs mb-4 text-muted">Basis: {baseYear}.</p>
+            <SearchField items={REVENUE_ITEMS} placeholder="Einnahmen durchsuchen… (z. B. „Umsatzsteuer“)" />
             <BudgetGroup items={REVENUE_ITEMS} section="steuern" values={values} onChange={update} color="#2E5E45" total={sums.einnahmen} title="Steuern (Bundesanteil)" />
             <BudgetGroup items={REVENUE_ITEMS} section="abzuege" values={values} onChange={update} color="#9C7A2A" total={sums.einnahmen} title="Abzüge vor dem Bundeshaushalt" description="Wird von den Steuereinnahmen abgezogen." negative />
             <BudgetGroup items={REVENUE_ITEMS} section="sonstige" values={values} onChange={update} color="#2E5E45" total={sums.einnahmen} title="Sonstige Einnahmen" />
@@ -164,6 +168,7 @@ export default function App() {
           <section>
             <h2 className="font-display text-lg font-semibold mb-1">Ausgaben</h2>
             <p className="font-body text-xs mb-4 text-muted">Nach Aufgabenbereich (Funktionenplan). Basis: {baseYear}.</p>
+            <SearchField items={EXPENSE_ITEMS} placeholder="Ausgaben durchsuchen… (z. B. „Verteid“)" />
             <BudgetGroup items={EXPENSE_ITEMS} section="dienste" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Allgemeine Dienste & Sicherheit" />
             <BudgetGroup items={EXPENSE_ITEMS} section="bildung" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Bildung, Wissenschaft, Forschung" />
             <BudgetGroup items={EXPENSE_ITEMS} section="soziales" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Soziale Sicherung, Familie, Arbeitsmarkt" description="Größter Ausgabenblock — Rente, Gesundheit, Bürgergeld u. a." />
@@ -173,10 +178,16 @@ export default function App() {
           </section>
         </div>
 
-        <footer className="mt-12 pt-6 border-t border-line">
+        <Explanations />
+
+        <Sources />
+
+        <footer className="mt-8 pt-6 border-t border-line">
           <p className="font-body text-xs text-muted">
-            Quellen: siehe <code>src/data/sources.js</code>. Dieses Werkzeug dient der
-            Veranschaulichung, nicht der Haushaltsplanung.
+            Erläuterungen und Quellen: siehe Abschnitte{" "}
+            <a href="#erlaeuterungen" className="underline decoration-dotted hover:decoration-solid">„Erläuterungen“</a>{" "}
+            und <a href="#quellen" className="underline decoration-dotted hover:decoration-solid">„Quellen“</a>.
+            Dieses Werkzeug dient der Veranschaulichung, nicht der Haushaltsplanung.
           </p>
         </footer>
       </div>

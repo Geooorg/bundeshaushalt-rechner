@@ -1,4 +1,5 @@
-import { fmt, safeShare, sliderMax, deltaLabel } from "../utils.js";
+import { fmt, safeShare, sliderMax, deltaLabel, rowAnchor } from "../utils.js";
+import { explanationAnchor, explanationNumber } from "../data/explanations.js";
 
 export default function Row({ item, value, onChange, color, total, negative }) {
   const max = sliderMax(item);
@@ -6,7 +7,7 @@ export default function Row({ item, value, onChange, color, total, negative }) {
   const share = safeShare(value, total);
 
   return (
-    <div className="py-3 border-b border-line">
+    <div id={rowAnchor(item.id)} className="py-3 border-b border-line scroll-mt-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
@@ -14,6 +15,15 @@ export default function Row({ item, value, onChange, color, total, negative }) {
             <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-tagbg text-muted">
               {item.tag}
             </span>
+            {item.explainKey && (
+              <a
+                href={`#${explanationAnchor(item.explainKey)}`}
+                title="Erläuterung dazu"
+                className="font-mono text-xs px-1.5 py-0.5 rounded-full border border-line text-muted hover:text-ink hover:border-ink"
+              >
+                Erläuterung [{explanationNumber(item.explainKey)}]
+              </a>
+            )}
           </div>
           {item.note && <p className="font-body text-xs mt-0.5 text-muted">{item.note}</p>}
           <p className="font-mono text-xs mt-1 text-muted">

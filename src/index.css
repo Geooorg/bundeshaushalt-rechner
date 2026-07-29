@@ -65,6 +65,18 @@ details > summary::-webkit-details-marker {
   display: none;
 }
 
+.row-highlight {
+  animation: row-flash 1.6s ease-out;
+}
+@keyframes row-flash {
+  0% {
+    background-color: rgba(156, 122, 42, 0.35);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;

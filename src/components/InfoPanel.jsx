@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function InfoPanel({ title, defaultOpen = true, children }) {
+export default function InfoPanel({ title, defaultOpen = false, children }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
     <details

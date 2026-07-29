@@ -5,6 +5,13 @@ export const safeShare = (v, total) => (total > 0 ? (v / total) * 100 : 0);
 
 export const sliderMax = (item) => Math.ceil((Math.max(item.v25, item.v26) * 2.3 + 4) / 5) * 5;
 
+export const rowAnchor = (id) => `zeile-${id}`;
+
+export const formatDate = (iso) => {
+  const [y, m, d] = iso.split("-");
+  return `${d}.${m}.${y}`;
+};
+
 export const deltaLabel = (v25, v26) => {
   if (v25 === 0 && v26 === 0) return "–";
   if (v25 === 0) return "neu";

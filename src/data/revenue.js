@@ -36,5 +36,5 @@ export const REVENUE_ITEMS = [
   { id: "darlehen", section: "sonstige", label: "Darlehensrückflüsse, Gewährleistungen", tag: "Kapitalrechnung", v25: 1.176, v26: 0.987, sourceKey: "bmfSollbericht2026" },
   { id: "zinseinnahmen", section: "sonstige", label: "Zinseinnahmen", tag: "Kapitalrechnung", v25: 1.845, v26: 0.949, sourceKey: "bmfSollbericht2026" },
   { id: "zuweisungenDritter", section: "sonstige", label: "Zuweisungen & Zuschüsse Dritter", tag: "u. a. EU-Aufbaufonds", v25: 6.433, v26: 14.634, sourceKey: "bmfSollbericht2026" },
-  { id: "sonstEinnahmenRest", section: "sonstige", label: "Sonstige, nicht einzeln ausgewiesene Einnahmen", tag: "Rest", v25: 2.054, v26: 0.720, note: "Differenz zur amtlichen Gruppensumme", sourceKey: "bmfSollbericht2026" },
+  { id: "sonstEinnahmenRest", section: "sonstige", label: "Sonstige, nicht einzeln ausgewiesene Einnahmen", tag: "Rest", v25: 2.054, v26: 0.720, note: "Differenz zur amtlichen Gruppensumme", sourceKey: "bmfSollbericht2026", explainKey: "restPositionen" },
 ];

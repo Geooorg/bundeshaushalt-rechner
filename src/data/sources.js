@@ -34,3 +34,13 @@ export const SOURCES = {
     retrieved: "2026-07-29",
   },
 };
+
+// Durchnummerierte Liste in fester Reihenfolge (Objekt-Insertion-Order), für die
+// Quellenliste im UI und für Verweise `#quelle-<key>` aus den Budget-Sektionen.
+export const SOURCE_LIST = Object.keys(SOURCES).map((key, i) => ({
+  key,
+  number: i + 1,
+  ...SOURCES[key],
+}));
+
+export const sourceAnchor = (key) => `quelle-${key}`;
