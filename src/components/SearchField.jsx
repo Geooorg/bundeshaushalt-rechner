@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { rowAnchor } from "../utils.js";
 
-export default function SearchField({ items, placeholder }) {
+export default function SearchField({ items, placeholder, onBeforeJump }) {
   const [query, setQuery] = useState("");
   const [notFound, setNotFound] = useState(false);
 
@@ -14,13 +14,17 @@ export default function SearchField({ items, placeholder }) {
       return;
     }
     setNotFound(false);
-    const el = document.getElementById(rowAnchor(match.id));
-    if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
-    el.classList.remove("row-highlight");
-    // force reflow so the animation restarts on repeated jumps to the same row
-    void el.offsetWidth;
-    el.classList.add("row-highlight");
+    if (onBeforeJump) onBeforeJump(match);
+    // defer until a group opened by onBeforeJump has re-rendered
+    requestAnimationFrame(() => {
+      const el = document.getElementById(rowAnchor(match.id));
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.remove("row-highlight");
+      // force reflow so the animation restarts on repeated jumps to the same row
+      void el.offsetWidth;
+      el.classList.add("row-highlight");
+    });
   };
 
   return (

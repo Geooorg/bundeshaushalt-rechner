@@ -14,7 +14,12 @@ const OFFICIAL_SALDO = { "2025": -65.355, "2026": -98.110 };
 const EXPENSE_SECTIONS = [
   { key: "dienste", label: "Allgemeine Dienste & Sicherheit", color: "#35566E" },
   { key: "bildung", label: "Bildung, Wissenschaft, Forschung", color: "#9C7A2A" },
-  { key: "soziales", label: "Soziale Sicherung, Familie, Arbeitsmarkt", color: "#2E5E45" },
+  {
+    key: "soziales",
+    label: "Soziale Sicherung, Familie, Arbeitsmarkt",
+    color: "#2E5E45",
+    description: "Größter Ausgabenblock — Rente, Gesundheit, Bürgergeld u. a.",
+  },
   { key: "wirtschaft", label: "Wirtschaft, Umwelt, Wohnen, Landwirtschaft", color: "#6B4226" },
   { key: "verkehr", label: "Verkehr", color: "#7B3F61" },
   { key: "finanz", label: "Finanzwirtschaft & Zinsen", color: "#4A6C6F" },
@@ -39,8 +44,22 @@ export default function App() {
 
   const [baseYear, setBaseYear] = useState("2026");
   const [values, setValues] = useState(datasets["2026"]);
+  const [openAusgaben, setOpenAusgaben] = useState(() =>
+    Object.fromEntries(EXPENSE_SECTIONS.map((s) => [s.key, false]))
+  );
+  const [openEinnahmen, setOpenEinnahmen] = useState({ sonstige: false, abzuege: false });
 
   const update = (id, v) => setValues((prev) => ({ ...prev, [id]: v }));
+  const toggleAusgabenSection = (key) => setOpenAusgaben((prev) => ({ ...prev, [key]: !prev[key] }));
+  const expandAusgabenSection = (key) =>
+    setOpenAusgaben((prev) => (prev[key] ? prev : { ...prev, [key]: true }));
+  const toggleEinnahmenSection = (key) => setOpenEinnahmen((prev) => ({ ...prev, [key]: !prev[key] }));
+  const expandEinnahmenSection = (key) =>
+    setOpenEinnahmen((prev) => (prev[key] ? prev : { ...prev, [key]: true }));
+  const expandForRevenueSegment = (segment) => {
+    const item = REVENUE_ITEMS.find((i) => i.id === segment.key);
+    if (item) expandEinnahmenSection(item.section);
+  };
   const loadYear = (y) => {
     setBaseYear(y);
     setValues(datasets[y]);
@@ -84,14 +103,23 @@ export default function App() {
     return segments;
   }, [values, sums.einnahmen]);
 
+  // Größte Ausgabenblöcke zuerst — sowohl in der Gruppenliste als auch im Kuchendiagramm.
+  const sortedExpenseSections = useMemo(() => {
+    const withTotals = EXPENSE_SECTIONS.map((s) => ({
+      ...s,
+      total: EXPENSE_ITEMS.filter((i) => i.section === s.key).reduce((sum, i) => sum + values[i.id], 0),
+    }));
+    return withTotals.sort((a, b) => b.total - a.total);
+  }, [values]);
+
   const expenseSegments = useMemo(
     () =>
-      EXPENSE_SECTIONS.map((s) => ({
+      sortedExpenseSections.map((s) => ({
         ...s,
-        value: EXPENSE_ITEMS.filter((i) => i.section === s.key).reduce((sum, i) => sum + values[i.id], 0),
+        value: s.total,
         anchorId: sectionAnchor(s.key),
       })),
-    [values]
+    [sortedExpenseSections]
   );
 
   return (
@@ -171,31 +199,63 @@ export default function App() {
         <div className="mb-8">
           <h2 className="font-display text-lg font-semibold mb-4">Zusammensetzung (gr&ouml;&szlig;te Positionen)</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <DonutChart title="Einnahmen" segments={revenueSegments} total={sums.einnahmen} />
-            <DonutChart title="Ausgaben" segments={expenseSegments} total={sums.ausgaben} />
+            <DonutChart
+              title="Einnahmen"
+              segments={revenueSegments}
+              total={sums.einnahmen}
+              onBeforeJump={expandForRevenueSegment}
+            />
+            <DonutChart
+              title="Ausgaben"
+              segments={expenseSegments}
+              total={sums.ausgaben}
+              onBeforeJump={(segment) => expandAusgabenSection(segment.key)}
+            />
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-4">
           <section>
-            <h2 className="font-display text-lg font-semibold mb-1">Einnahmen</h2>
-            <p className="font-body text-xs mb-4 text-muted">Basis: {baseYear}.</p>
-            <SearchField items={REVENUE_ITEMS} placeholder="Einnahmen durchsuchen… (z.B. „UmsatzSt“)" />
+            <div className="sticky top-0 z-10 bg-paper pt-2 pb-3 mb-1 border-b border-line">
+              <h2 className="font-display text-lg font-semibold mb-1">Einnahmen</h2>
+              <p className="font-body text-xs mb-4 text-muted">Basis: {baseYear}.</p>
+              <SearchField
+                items={REVENUE_ITEMS}
+                placeholder="Einnahmen durchsuchen… (z.B. „UmsatzSt“)"
+                onBeforeJump={(item) => expandEinnahmenSection(item.section)}
+              />
+            </div>
             <BudgetGroup items={REVENUE_ITEMS} section="steuern" values={values} onChange={update} color="#2E5E45" total={sums.einnahmen} title="Steuern (Bundesanteil)" />
-            <BudgetGroup items={REVENUE_ITEMS} section="abzuege" values={values} onChange={update} color="#9C7A2A" total={sums.einnahmen} title="Abzüge vor dem Bundeshaushalt" description="Wird von den Steuereinnahmen abgezogen." negative />
-            <BudgetGroup items={REVENUE_ITEMS} section="sonstige" values={values} onChange={update} color="#2E5E45" total={sums.einnahmen} title="Sonstige Einnahmen" />
+            <BudgetGroup items={REVENUE_ITEMS} section="sonstige" values={values} onChange={update} color="#2E5E45" total={sums.einnahmen} title="Sonstige Einnahmen" collapsible open={openEinnahmen.sonstige} onToggle={() => toggleEinnahmenSection("sonstige")} />
+            <BudgetGroup items={REVENUE_ITEMS} section="abzuege" values={values} onChange={update} color="#9C7A2A" total={sums.einnahmen} title="Abzüge vor dem Bundeshaushalt" description="Wird von den Steuereinnahmen abgezogen." negative collapsible open={openEinnahmen.abzuege} onToggle={() => toggleEinnahmenSection("abzuege")} />
           </section>
 
           <section>
-            <h2 className="font-display text-lg font-semibold mb-1">Ausgaben</h2>
-            <p className="font-body text-xs mb-4 text-muted">Nach Aufgabenbereich (Funktionenplan). Basis: {baseYear}.</p>
-            <SearchField items={EXPENSE_ITEMS} placeholder="Ausgaben durchsuchen… (z.B. „Verteidigung“)" />
-            <BudgetGroup items={EXPENSE_ITEMS} section="dienste" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Allgemeine Dienste & Sicherheit" />
-            <BudgetGroup items={EXPENSE_ITEMS} section="bildung" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Bildung, Wissenschaft, Forschung" />
-            <BudgetGroup items={EXPENSE_ITEMS} section="soziales" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Soziale Sicherung, Familie, Arbeitsmarkt" description="Größter Ausgabenblock — Rente, Gesundheit, Bürgergeld u. a." />
-            <BudgetGroup items={EXPENSE_ITEMS} section="wirtschaft" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Wirtschaft, Umwelt, Wohnen, Landwirtschaft" />
-            <BudgetGroup items={EXPENSE_ITEMS} section="verkehr" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Verkehr" />
-            <BudgetGroup items={EXPENSE_ITEMS} section="finanz" values={values} onChange={update} color="#35566E" total={sums.ausgaben} title="Finanzwirtschaft & Zinsen" />
+            <div className="sticky top-0 z-10 bg-paper pt-2 pb-3 mb-1 border-b border-line">
+              <h2 className="font-display text-lg font-semibold mb-1">Ausgaben</h2>
+              <p className="font-body text-xs mb-4 text-muted">Nach Aufgabenbereich (Funktionenplan). Basis: {baseYear}.</p>
+              <SearchField
+                items={EXPENSE_ITEMS}
+                placeholder="Ausgaben durchsuchen… (z.B. „Verteidigung“)"
+                onBeforeJump={(item) => expandAusgabenSection(item.section)}
+              />
+            </div>
+            {sortedExpenseSections.map((s) => (
+              <BudgetGroup
+                key={s.key}
+                items={EXPENSE_ITEMS}
+                section={s.key}
+                values={values}
+                onChange={update}
+                color="#35566E"
+                total={sums.ausgaben}
+                title={s.label}
+                description={s.description}
+                collapsible
+                open={openAusgaben[s.key]}
+                onToggle={() => toggleAusgabenSection(s.key)}
+              />
+            ))}
           </section>
         </div>
 
