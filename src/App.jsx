@@ -262,6 +262,77 @@ export default function App() {
         <Explanations />
 
         <div className="mt-8">
+        <InfoPanel title="Wofür dient dieses Tool, und was kann ich mit den Reglern machen?">
+          <p>
+            Dieses Werkzeug macht den Bundeshaushalt 2025/2026 zum Anfassen: Statt abstrakter
+            Milliardensummen in einer Tabelle sehen Sie jede Einnahme- und Ausgabeposition als
+            verschiebbaren Regler. Ziel ist, ein Gefühl für die Größenordnungen zu bekommen — was
+            wiegt wie viel im Vergleich zueinander, und wie hängen Einnahmen, Ausgaben und
+            Neuverschuldung zusammen.
+          </p>
+          <p>
+            Jeder Regler zeigt den amtlichen Wert einer Position (Ist 2025 oder Soll 2026, je nach
+            gewähltem Basisjahr) und lässt sich frei verschieben. Bewegen Sie einen Regler, ändert
+            sich sofort: die Summen oben (Einnahmen, Ausgaben, Saldo/Neuschulden), der Anteil der
+            jeweiligen Gruppe im Kuchendiagramm sowie der Prozentanteil an der Gesamtsumme neben
+            dem Regler selbst. So lassen sich eigene Szenarien durchspielen — etwa: „Was, wenn ich
+            die Verteidigungsausgaben um 10 Mrd. € kürze — wie stark verändert das den Saldo, und
+            wie groß ist dieser Betrag im Vergleich zu anderen Posten?“ Mit „Zurücksetzen“ kehren
+            Sie jederzeit zu den amtlichen Werten des gewählten Basisjahres zurück; die amtlichen
+            Zahlen selbst werden dabei nie verändert.
+          </p>
+        </InfoPanel>
+
+        <InfoPanel title="Woher kommen die Zahlen, und wie verlässlich sind die Soll-Werte für 2026?">
+          <p>
+            Alle Zahlen stammen aus dem BMF-Monatsbericht Februar 2026 („Sollbericht 2026“, siehe
+            Abschnitt „Quellen“ unten). „Ist 2025“ ist der vorläufige Haushaltsabschluss — was
+            tatsächlich eingenommen und ausgegeben wurde. „Soll 2026“ ist dagegen der im
+            Haushaltsgesetz 2026 beschlossene Planwert: das, was der Bundestag für das laufende
+            Jahr bewilligt hat, nicht das, was am Jahresende tatsächlich verausgabt sein wird.
+          </p>
+          <p>
+            Solche Planwerte können sich im Jahresverlauf noch ändern, etwa durch einen
+            Nachtragshaushalt oder über- bzw. unterplanmäßige Ausgaben. Erst der spätere
+            Kassenabschluss zeigt die endgültigen Ist-Zahlen — so wie „Ist 2025“ hier bereits ein
+            solcher (vorläufiger) Abschluss ist.
+          </p>
+        </InfoPanel>
+
+        <InfoPanel title="Warum unterscheiden sich Ist 2025 und Soll 2026 bei einzelnen Posten teils stark?">
+          <p>
+            Nicht jede große Veränderung zwischen 25 und 26 bedeutet eine politische
+            Kurskorrektur — oft stecken Basis- oder Einmaleffekte dahinter. Beispiel Eisenbahnen
+            und ÖPNV: Der Wert sinkt von 15,1 Mrd. € (2025) auf 5,5 Mrd. € (2026), weil 2025
+            einmalig eine Eigenkapitalzuführung von 8,3 Mrd. € an die Deutsche Bahn enthalten war,
+            die 2026 entfällt. Umgekehrt kann ein Sprung nach oben eine neue Belastung markieren,
+            etwa bei Arbeitslosen- und Pflegeversicherung, wo die Darlehen des Bundes 2026 deutlich
+            steigen.
+          </p>
+          <p>
+            Ein Blick auf die Notiz unter der jeweiligen Zeile (falls vorhanden) verrät meist den
+            Grund für ungewöhnlich große Sprünge.
+          </p>
+        </InfoPanel>
+
+        <InfoPanel title="Wie berechnen sich die Neuschulden? Wie hoch ist der Anteil der Zinsen?">
+          <p>
+            Die „Neuen Schulden“ oben im Siegel sind schlicht die Differenz aus Einnahmen und
+            Ausgaben (Saldo). Für 2026 (Plan): 426,4 Mrd. € Einnahmen − 524,5 Mrd. € Ausgaben =
+            −98,1 Mrd. €. Diese Deckungslücke muss der Bund über neue Kredite am Kapitalmarkt
+            schließen (Nettokreditaufnahme). Verschieben Sie einen Regler, ändert sich der Saldo im
+            Siegel oben live mit.
+          </p>
+          <p>
+            Ein Teil der Ausgaben ist selbst eine Folge früherer Schulden: die Zinsen für die
+            Bundesschuld. Sie stecken in der Gruppe „Finanzwirtschaft & Zinsen“ und betragen 30,2
+            Mrd. € (2026) bzw. 29,9 Mrd. € (2025) — rund 80 % dieser gesamten Gruppe. Gemessen an
+            den gesamten Ausgaben sind das knapp 6 %, gemessen an den neuen Schulden aber fast ein
+            Drittel: Von jedem Euro, den der Bund 2026 neu leiht, gehen rund 31 Cent allein für
+            Zinsen auf bereits bestehende Schulden drauf.
+          </p>
+        </InfoPanel>
+
         <InfoPanel title="Wie transparent sind Rente & Sozialversicherung im Bundeshaushalt?">
           <p>
             Nur bedingt. Der Bundeshaushalt zeigt bei „Rentenversicherung" nur, was der{" "}
@@ -294,6 +365,52 @@ export default function App() {
             <li>— <strong className="text-ink">Schulen:</strong> Bildung ist Ländersache.</li>
             <li>— <strong className="text-ink">Krankenhäuser:</strong> Länder (Investitionen) und Krankenkassen (Betrieb).</li>
           </ul>
+        </InfoPanel>
+
+        <InfoPanel title="Warum ist der Bundeshaushalt nur ein Teil der gesamten Staatsausgaben in Deutschland?">
+          <p>
+            Der hier gezeigte Bundeshaushalt ist nur eine von mehreren staatlichen Kassen. Daneben
+            gibt es die 16 Länderhaushalte, die kommunalen Haushalte (Städte, Gemeinden,
+            Landkreise) sowie die Sozialversicherungsträger — gesetzliche Renten-, Kranken-,
+            Pflege- und Arbeitslosenversicherung —, die jeweils eigene, vom Bundeshaushalt
+            getrennte Haushalte mit eigenen Beitragseinnahmen führen.
+          </p>
+          <p>
+            Der Bund zahlt diesen Sozialversicherungsträgern zwar Zuschüsse (die im Bundeshaushalt
+            als Ausgabe erscheinen, siehe „Soziale Sicherung“ oben) — die eigentlichen
+            Versicherungsleistungen, etwa die tatsächlich ausgezahlten Renten, laufen aber über
+            deren eigene Haushalte und tauchen im Bundeshaushalt nicht auf. Wer die gesamten
+            Staatsausgaben Deutschlands sehen will, müsste Bund, Länder, Kommunen und
+            Sozialversicherung zusammenrechnen — den „Staatshaushalt“ im gesamtstaatlichen Sinne,
+            wie ihn z. B. das Statistische Bundesamt ausweist.
+          </p>
+        </InfoPanel>
+
+        <InfoPanel title="Welche Stellschrauben gäbe es, um Ausgaben zu senken oder Einnahmen zu erhöhen?">
+          <p>
+            Eine unvollständige, unbewertete Übersicht über Ansatzpunkte, die in der politischen
+            Debatte immer wieder genannt werden — dieses Tool nimmt dazu keine Position, sondern
+            liefert nur die Größenordnungen zum Einordnen:
+          </p>
+          <p className="text-ink">Ausgabenseite:</p>
+          <ul className="space-y-1.5 list-none m-0 p-0">
+            <li>— <strong className="text-ink">Subventionsabbau</strong>, z. B. bei klima- oder umweltschädlichen Subventionen</li>
+            <li>— <strong className="text-ink">Aufgabenkritik</strong> beim Leistungsniveau einzelner Sozialleistungen</li>
+            <li>— <strong className="text-ink">Verwaltungseffizienz</strong> und Bürokratieabbau</li>
+            <li>— <strong className="text-ink">Priorisierung</strong> innerhalb einzelner Ressorts, z. B. Beschaffungsvorhaben strecken</li>
+          </ul>
+          <p className="text-ink">Einnahmenseite:</p>
+          <ul className="space-y-1.5 list-none m-0 p-0">
+            <li>— <strong className="text-ink">Steuersatz-Änderungen</strong>, z. B. beim Einkommensteuer-Spitzensatz</li>
+            <li>— <strong className="text-ink">Abbau von Steuervergünstigungen</strong>, etwa beim Ehegattensplitting oder Dienstwagenprivileg</li>
+            <li>— <strong className="text-ink">Neue oder wiedereingeführte Steuern</strong>, z. B. eine Vermögensteuer</li>
+            <li>— <strong className="text-ink">Verbreiterung der Bemessungsgrundlage</strong> und bessere Bekämpfung von Steuervermeidung</li>
+          </ul>
+          <p>
+            Jede dieser Optionen hat eigene wirtschaftliche und verteilungspolitische
+            Nebenwirkungen, die hier bewusst nicht bewertet werden — probieren Sie die
+            Größenordnungen stattdessen selbst mit den Reglern oben aus.
+          </p>
         </InfoPanel>
         </div>
 
