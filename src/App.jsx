@@ -353,6 +353,49 @@ export default function App() {
           </ul>
         </InfoPanel>
 
+        <InfoPanel id="faq-rentenpaket-kosten" title="Wie teuer war die letzte Rentenerhöhung — und was hat die aktuelle Rentenreform gekostet?">
+          <p>
+            Zwei verschiedene Dinge werden hier oft vermischt. Die reguläre Rentenanpassung zum 1.
+            Juli 2026 (+4,24 %, Standardrente +77,85 €/Monat) ist keine politische Entscheidung im
+            engeren Sinn, sondern folgt einer gesetzlich vorgeschriebenen Formel, die sich vor
+            allem an der Lohnentwicklung orientiert — das passiert jedes Jahr, unabhängig davon,
+            wer gerade Kanzler ist.
+          </p>
+          <p>
+            Das eigentliche politische Rentenpaket 2025 der Regierung Merz (im Dezember 2025 von
+            Bundestag und Bundesrat beschlossen) ist da schon eher gemeint und enthält mehrere
+            kostenträchtige Maßnahmen. Größter Posten ist die{" "}
+            <strong className="text-ink">Haltelinie beim Rentenniveau</strong> (48 % bis 2031,
+            Nachhaltigkeitsfaktor ausgesetzt): Laut Regierungsschätzung steigt der dafür nötige
+            zusätzliche Bundeszuschuss von 3,6 Mrd. € (2029) über 9,3 Mrd. € (2030) auf 11 Mrd. €
+            (2031). Kritiker aus der Unionsfraktion selbst rechnen damit, dass die Kosten nach 2031
+            auf rund 15 Mrd. € jährlich weiterlaufen, falls die Haltelinie nicht ausläuft. Dazu
+            kommen die <strong className="text-ink">Aktivrente</strong> (steuerfreier
+            Hinzuverdienst bis 2.000 €/Monat für Beschäftigte über der Regelaltersgrenze, ab 2026:
+            laut BMAS rund 890 Mio. € jährliche Entlastung), eine Ausweitung der{" "}
+            <strong className="text-ink">Mütterrente</strong> sowie die neue{" "}
+            <strong className="text-ink">Frühstart-Rente</strong> (10 €/Monat in ein
+            kapitalgedecktes Konto für 6- bis 18-Jährige) — für beide gibt es keine offizielle
+            Einzelbezifferung.
+          </p>
+          <p>
+            Ein von der arbeitgebernahen Initiative Neue Soziale Marktwirtschaft (INSM) in Auftrag
+            gegebenes Prognos-Gutachten kommt für das gesamte Paket auf Gesamtkosten von rund 480
+            Mrd. € bis 2050 — deutlich mehr als die von der Regierung selbst genannten
+            Einzeljahres-Beträge. Solche Langfrist-Schätzungen hängen stark von Annahmen zu Lohn-,
+            Preis- und Bevölkerungsentwicklung ab, stammen zudem von einer wirtschaftsnahen,
+            kritischen Quelle und sollten daher als Bandbreite, nicht als feste Zahl gelesen
+            werden.
+          </p>
+          <p>
+            Bezug zu diesem Rechner: Der Bundeszuschuss zur Rentenversicherung (123,8 Mrd. € 2026,
+            siehe Zeile „Rentenversicherung" oben) steigt zwar auch 2026 gegenüber 2025 — das liegt
+            aber vor allem an der allgemeinen Lohn- und Rentenentwicklung. Die zusätzlichen Kosten
+            der Haltelinie beim Rentenniveau schlagen laut Regierungsschätzung erst ab 2029
+            spürbar zu Buche und stecken in diesem 2026er-Datensatz daher noch kaum drin.
+          </p>
+        </InfoPanel>
+
         <InfoPanel id="faq-wer-zahlt-was" title="Wer zahlt eigentlich was? Bund, Länder, Kommunen">
           <p>
             Viele Aufgaben, die man intuitiv „dem Staat" zuordnet, finanzieren in Deutschland
