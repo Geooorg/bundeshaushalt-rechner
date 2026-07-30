@@ -262,7 +262,7 @@ export default function App() {
         <Explanations />
 
         <div className="mt-8">
-        <InfoPanel title="Wofür dient dieses Tool, und was kann ich mit den Reglern machen?">
+        <InfoPanel id="faq-tool-zweck" title="Wofür dient dieses Tool, und was kann ich mit den Reglern machen?">
           <p>
             Dieses Werkzeug macht den Bundeshaushalt 2025/2026 zum Anfassen: Statt abstrakter
             Milliardensummen in einer Tabelle sehen Sie jede Einnahme- und Ausgabeposition als
@@ -283,7 +283,7 @@ export default function App() {
           </p>
         </InfoPanel>
 
-        <InfoPanel title="Woher kommen die Zahlen, und wie verlässlich sind die Soll-Werte für 2026?">
+        <InfoPanel id="faq-zahlen-quelle" title="Woher kommen die Zahlen, und wie verlässlich sind die Soll-Werte für 2026?">
           <p>
             Alle Zahlen stammen aus dem BMF-Monatsbericht Februar 2026 („Sollbericht 2026“, siehe
             Abschnitt „Quellen“ unten). „Ist 2025“ ist der vorläufige Haushaltsabschluss — was
@@ -299,7 +299,7 @@ export default function App() {
           </p>
         </InfoPanel>
 
-        <InfoPanel title="Warum unterscheiden sich Ist 2025 und Soll 2026 bei einzelnen Posten teils stark?">
+        <InfoPanel id="faq-ist-soll-abweichungen" title="Warum unterscheiden sich Ist 2025 und Soll 2026 bei einzelnen Posten teils stark?">
           <p>
             Nicht jede große Veränderung zwischen 25 und 26 bedeutet eine politische
             Kurskorrektur — oft stecken Basis- oder Einmaleffekte dahinter. Beispiel Eisenbahnen
@@ -315,7 +315,7 @@ export default function App() {
           </p>
         </InfoPanel>
 
-        <InfoPanel title="Wie berechnen sich die Neuschulden? Wie hoch ist der Anteil der Zinsen?">
+        <InfoPanel id="faq-neuschulden-zinsen" title="Wie berechnen sich die Neuschulden? Wie hoch ist der Anteil der Zinsen?">
           <p>
             Die „Neuen Schulden“ oben im Siegel sind schlicht die Differenz aus Einnahmen und
             Ausgaben (Saldo). Für 2026 (Plan): 426,4 Mrd. € Einnahmen − 524,5 Mrd. € Ausgaben =
@@ -333,7 +333,7 @@ export default function App() {
           </p>
         </InfoPanel>
 
-        <InfoPanel title="Wie transparent sind Rente & Sozialversicherung im Bundeshaushalt?">
+        <InfoPanel id="faq-rente-transparenz" title="Wie transparent sind Rente & Sozialversicherung im Bundeshaushalt?">
           <p>
             Nur bedingt. Der Bundeshaushalt zeigt bei „Rentenversicherung" nur, was der{" "}
             <strong className="text-ink">Bund an Zuschüssen zahlt</strong> — 123,8 Mrd. € 2026
@@ -353,7 +353,7 @@ export default function App() {
           </ul>
         </InfoPanel>
 
-        <InfoPanel title="Wer zahlt eigentlich was? Bund, Länder, Kommunen">
+        <InfoPanel id="faq-wer-zahlt-was" title="Wer zahlt eigentlich was? Bund, Länder, Kommunen">
           <p>
             Viele Aufgaben, die man intuitiv „dem Staat" zuordnet, finanzieren in Deutschland
             gar nicht der Bund, sondern die 16 Bundesländer oder die Kommunen:
@@ -367,7 +367,7 @@ export default function App() {
           </ul>
         </InfoPanel>
 
-        <InfoPanel title="Warum ist der Bundeshaushalt nur ein Teil der gesamten Staatsausgaben in Deutschland?">
+        <InfoPanel id="faq-staatsausgaben-gesamt" title="Warum ist der Bundeshaushalt nur ein Teil der gesamten Staatsausgaben in Deutschland?">
           <p>
             Der hier gezeigte Bundeshaushalt ist nur eine von mehreren staatlichen Kassen. Daneben
             gibt es die 16 Länderhaushalte, die kommunalen Haushalte (Städte, Gemeinden,
@@ -386,7 +386,42 @@ export default function App() {
           </p>
         </InfoPanel>
 
-        <InfoPanel title="Welche Stellschrauben gäbe es, um Ausgaben zu senken oder Einnahmen zu erhöhen?">
+        <InfoPanel id="faq-sondervermoegen" title="Tauchen die Sondervermögen für Bundeswehr und Infrastruktur hier im Haushalt auf?">
+          <p>
+            Nein. Sondervermögen sind eigene Nebenhaushalte mit eigener Kreditaufnahme, die
+            außerhalb des „Kernhaushalts“ laufen — und genau diesen Kernhaushalt zeigt dieser
+            Rechner (524,5 Mrd. € Gesamtausgaben 2026 entsprechen exakt der amtlichen
+            Kernhaushalts-Summe, ohne Sondervermögen).
+          </p>
+          <p>
+            <strong className="text-ink">Sondervermögen Bundeswehr</strong> (2022 beschlossen, 100
+            Mrd. €, mittlerweile weitgehend verplant): 2026 fließen daraus zusätzlich 25,5 Mrd. €
+            in die Streitkräfte — obendrauf auf die 82,7 Mrd. € des regulären Wehretats (Einzelplan
+            14). Zusammengerechnet ergibt das die in den Medien oft genannten rund 108 Mrd. €
+            Verteidigungsausgaben 2026. Die „Verteidigung“-Zeile in diesem Rechner (93,5 Mrd. €
+            2026) zeigt dagegen nur den Kernhaushalts-Anteil nach Funktionenplan — der zwar etwas
+            breiter gefasst ist als Einzelplan 14 allein (er schließt einige verteidigungsnahe
+            Posten aus anderen Einzelplänen mit ein), aber vollständig ohne die
+            Sondervermögen-Mittel auskommt.
+          </p>
+          <p>
+            <strong className="text-ink">Sondervermögen Infrastruktur und Klimaneutralität</strong>{" "}
+            (im März 2025 beschlossen, 500 Mrd. € Gesamtvolumen über gut ein Jahrzehnt): 2026 werden
+            daraus 58,1 Mrd. € Kredite aufgenommen, davon 21,3 Mrd. € zusätzlich für
+            Verkehrsinvestitionen. Die „Verkehr“-Zeile hier (21,4 Mrd. €) zeigt auch dabei nur den
+            Kernhaushalt — real kommt noch einmal etwa derselbe Betrag aus dem Sondervermögen oben
+            drauf.
+          </p>
+          <p>
+            Politisch genutzt werden Sondervermögen vor allem, weil ihre Kreditaufnahme von der
+            grundgesetzlichen Schuldenbremse ausgenommen ist: Sie erlauben höhere Investitionen, ohne
+            dass sie auf den Kernhaushalts-Saldo — und damit die „Neuen Schulden“ oben im Siegel —
+            durchschlagen. Wer die tatsächliche Gesamtverschuldung des Bundes sehen will, muss
+            Kernhaushalt und Sondervermögen zusammen betrachten.
+          </p>
+        </InfoPanel>
+
+        <InfoPanel id="faq-stellschrauben" title="Welche Stellschrauben gäbe es, um Ausgaben zu senken oder Einnahmen zu erhöhen?">
           <p>
             Eine unvollständige, unbewertete Übersicht über Ansatzpunkte, die in der politischen
             Debatte immer wieder genannt werden — dieses Tool nimmt dazu keine Position, sondern
